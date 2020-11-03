@@ -106,7 +106,7 @@ void makeTics(void)
 	char str[16];
 	GLdouble x, y, z, dz, rgb[3];
 	GLdouble s_mtt, c_mtt;
-	GLdouble tmp_x, tmp_y, tmp_z, tmp_zx, tmp_zy;
+	GLdouble tmp_x, tmp_y, /* tmp_z, */tmp_zx, tmp_zy;
 	GLdouble tmp_z1_x, tmp_z1_y, tmp_z2_x, tmp_z2_y;
 
 	glLineWidth(2);
@@ -309,8 +309,8 @@ void plotGraph(void)
 					g_func[k + 1] == '+' || g_func[k + 1] == '-' || g_func[k + 1] == '*' || g_func[k + 1] == '/' || \
 					g_func[k + 1] == ' ' || g_func[k + 1] == ',' || g_func[k + 1] == '(' || g_func[k + 1] == ')'))
 				{
-					if (g_func[k] == 'x') sprintf(tmp, "%.2f", x);
-					else if (g_func[k] == 'y') sprintf(tmp, "%.2f", y);
+					if (g_func[k] == 'x') sprintf(tmp, "%f", x);
+					else if (g_func[k] == 'y') sprintf(tmp, "%f", y);
 					strcat(func, tmp);
 					l = strlen(func) - 1;
 				}
@@ -322,7 +322,6 @@ void plotGraph(void)
 			g_plot[i][j][2] = z;
 			if (z < g_zmin) g_zmin = z;
 			if (z > g_zmax) g_zmax = z;
-			printf("%s = %f\n", func, z);
 		}
 	}
 	for (i = 0; i < g_xnum; i++)
@@ -364,6 +363,8 @@ void keyin(unsigned char key, int x, int y)
 		case 'w': g_wire = (g_wire + 1) % 2; glutPostRedisplay(); break;
 		case 's': g_solid = (g_solid + 1) % 2; glutPostRedisplay(); break;
 		case 't': g_tics = (g_tics + 1) % 2; glutPostRedisplay(); break;
+		case 'u': g_size *= 1.05; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
+		case 'U': g_size /= 1.05; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
 		case '\033': exit(0);
 		default: break;
 	}

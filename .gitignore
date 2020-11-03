@@ -2,3 +2,5 @@
 func/
 # out
 3Dgraph
+*.out
+*exe

@@ -3,7 +3,7 @@
 
 #define STR_LENGTH 1024
 
-void einit(const char in[], char out[]);
+void funcinit(const char in[], char out[]);
 void strrep(char str[], const char *bef, const char *aft);
 double eval(char *str);
 double eval2(char *str);

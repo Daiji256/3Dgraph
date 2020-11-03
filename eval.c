@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include <math.h>
 
-void einit(const char in[], char out[])
+void funcinit(const char in[], char out[])
 {
 	sprintf(out, "(%s)", in);
 	while (strchr(out, ' ')) strrep(out, " ", "");
@@ -16,7 +16,7 @@ void strrep(char str[], const char *bef, const char *aft)
 	char tmp[STR_LENGTH], *p;
 
 	p = str;
-	if (p = strstr(p, bef))
+	if ((p = strstr(p, bef)))
 	{
 		strcpy(tmp, p + strlen(bef));
 		*p = '\0';
@@ -28,7 +28,7 @@ void strrep(char str[], const char *bef, const char *aft)
 double eval(char *str)
 {
 	char str2[STR_LENGTH];
-	einit(str, str2);
+	funcinit(str, str2);
 	return eval2(str2);
 }
 
@@ -116,66 +116,75 @@ double calc(char *str, int i)
 		a = 0;
 	}
 
-	j = i + 1;
-	if (str[j] == '(')
+	for (j = i + 1; str[j] != '\0'; j++)
 	{
-		pr = str + j;
-		if (str[i] == '+' || str[i] == '-')
+		if (str[j] == '(')
 		{
-			if ((next = getoperator(pr)) != NULL)
+			if (!isoperator(str[j - 1]) && str[j - 1] != '(' && str[j - 1] != ')')
 			{
-				switch (*next)
+				while (!isoperator(str[j - 1]) && str[j - 1] != '(' && str[j - 1] != ')') j--;
+				tmp = calcfunc(str + j);
+			}
+			pr = str + j;
+			if (str[i] == '+' || str[i] == '-')
+			{
+				if ((next = getoperator(pr)) != NULL)
 				{
-					case '*':
-					case '/': b = calc(pr, next - pr); break;
-					case '+':
-					case '-': b = eval2(pr); break;
-					default: break;
+					switch (*next)
+					{
+						case '*':
+						case '/': b = calc(pr, next - pr); break;
+						case '+':
+						case '-': b = eval2(pr); break;
+						default: break;
+					}
 				}
+				else b = eval2(pr);
 			}
 			else b = eval2(pr);
-		}
-		else b = eval2(pr);
-		if (str[j] == '(')
-		{
-			while (str[j] != ')')
+			if (str[j] == '(')
 			{
-				j++;
-				if (str[j] == '\0') exit(EXIT_FAILURE);
-			}
-		}
-		else if (isnumber(str[j])) while (isnumber(str[j + 1])) j++;
-		else exit(EXIT_FAILURE);
-	}
-	else if (isnumber(str[j]))
-	{
-		pr = str + j;
-		if (str[i] == '+' || str[i] == '-')
-		{
-			if ((next = getoperator(pr)) != NULL)
-			{
-				switch (*next)
+				while (str[j] != ')')
 				{
-					case '*':
-					case '/': b = calc(pr, next - pr); break;
-					case '+':
-					case '-': b = atof(pr); break;
-					default: break;
+					j++;
+					if (str[j] == '\0') exit(EXIT_FAILURE);
 				}
 			}
-			else b = atof(pr);
+			else if (isnumber(str[j])) while (isnumber(str[j + 1])) j++;
+			else exit(EXIT_FAILURE);
+			break;
 		}
-		else b = atof(pr);
-		if (str[j] == '(')
+		else if (isnumber(str[j]))
 		{
-			while (str[j] != ')')
+			pr = str + j;
+			if (str[i] == '+' || str[i] == '-')
 			{
-				j++;
-				if (str[j] == '\0') exit(EXIT_FAILURE);
+				if ((next = getoperator(pr)) != NULL)
+				{
+					switch (*next)
+					{
+						case '*':
+						case '/': b = calc(pr, next - pr); break;
+						case '+':
+						case '-': b = atof(pr); break;
+						default: break;
+					}
+				}
+				else b = atof(pr);
 			}
+			else b = atof(pr);
+			if (str[j] == '(')
+			{
+				while (str[j] != ')')
+				{
+					j++;
+					if (str[j] == '\0') exit(EXIT_FAILURE);
+				}
+			}
+			else if (isnumber(str[j])) while (isnumber(str[j + 1])) j++;
+			else exit(EXIT_FAILURE);
+			break;
 		}
-		else if (isnumber(str[j])) while (isnumber(str[j + 1])) j++;
-		else exit(EXIT_FAILURE);
 	}
 
 	switch (str[i])
@@ -207,7 +216,6 @@ double calcfunc(char *str)
 	if (strcmp("abs", func) == 0 || \
 		strcmp("fabs", func) == 0 || \
 		strcmp("sqrt", func) == 0 || \
-		strcmp("cbrt", func) == 0 || \
 		strcmp("sin", func) == 0 || \
 		strcmp("cos", func) == 0 || \
 		strcmp("tan", func) == 0 || \
@@ -246,7 +254,6 @@ double calcfunc(char *str)
 		if (strcmp("abs", func) == 0) tmp = fabs(eval2(x));
 		else if (strcmp("fabs", func) == 0) tmp = fabs(eval2(x));
 		else if (strcmp("sqrt", func) == 0) tmp = sqrt(eval2(x));
-		else if (strcmp("cbrt", func) == 0) tmp = cbrt(eval2(x));
 		else if (strcmp("sin", func) == 0) tmp = sin(eval2(x));
 		else if (strcmp("cos", func) == 0) tmp = cos(eval2(x));
 		else if (strcmp("tan", func) == 0) tmp = tan(eval2(x));
@@ -271,13 +278,7 @@ double calcfunc(char *str)
 		strcmp("atan2", func) == 0 || \
 		strcmp("hypot", func) == 0 || \
 		strcmp("mod", func) == 0 || \
-		strcmp("fmod", func) == 0 || \
-		strcmp("dim", func) == 0 || \
-		strcmp("fdim", func) == 0 || \
-		strcmp("max", func) == 0 || \
-		strcmp("fmax", func) == 0 || \
-		strcmp("min", func) == 0 || \
-		strcmp("fmin", func) == 0)
+		strcmp("fmod", func) == 0)
 	{
 		str2[i] = str[i];
 		x[0] = '(';
@@ -313,17 +314,12 @@ double calcfunc(char *str)
 		else if (strcmp("hypot", func) == 0) tmp = hypot(eval2(x), eval2(y));
 		else if (strcmp("mod", func) == 0) tmp = fmod(eval2(x), eval2(y));
 		else if (strcmp("fmod", func) == 0) tmp = fmod(eval2(x), eval2(y));
-		else if (strcmp("dim", func) == 0) tmp = fdim(eval2(x), eval2(y));
-		else if (strcmp("fdim", func) == 0) tmp = fdim(eval2(x), eval2(y));
-		else if (strcmp("max", func) == 0) tmp = fmax(eval2(x), eval2(y));
-		else if (strcmp("fmax", func) == 0) tmp = fmax(eval2(x), eval2(y));
-		else if (strcmp("min", func) == 0) tmp = fmin(eval2(x), eval2(y));
-		else if (strcmp("fmin", func) == 0) tmp = fmin(eval2(x), eval2(y));
 	}
 
 	if (tmp >= 0) sprintf(val, "%f", tmp);
 	else sprintf(val, "(%f)", tmp);
 	strrep(str, str2, val);
+
 	return tmp;
 }
 

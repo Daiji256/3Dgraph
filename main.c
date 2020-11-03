@@ -1,7 +1,8 @@
-#include "mkfunc.h"
+#include "eval.h"
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <float.h>
 #include <math.h>
 
@@ -10,7 +11,7 @@
 ********************************/
 
 #define PI 3.14159265359
-#define DATANUM 100
+#define DATANUM 512
 #define MOUSE_LEFT_BUTTON 0
 #define MOUSE_MIDDLE_BUTTON 1
 #define MOUSE_RIGHT_BUTTON 2
@@ -37,8 +38,9 @@ void init(void);
 ********************************/
 
 /* グラフのパラメータ */
+char g_func[STR_LENGTH];
 GLdouble g_xmin, g_xmax, g_xint, g_ymin, g_ymax, g_yint, g_zmin, g_zmax;
-int g_xnum, g_ynum;
+int g_xnum = 41, g_ynum = 41;
 GLdouble g_plot[DATANUM][DATANUM][3], g_plotRGB[DATANUM][DATANUM][3];
 
 /* カメラの視点e，注視点a，カメラの上方向u */
@@ -75,18 +77,9 @@ void display(void)
 	);
 	glScaled(g_xscale, g_yscale, g_zscale);
 
-	if (g_solid == 1)
-	{
-		solid3Dgraph();
-	}
-	if (g_wire == 1)
-	{
-		wire3Dgraph();
-	}
-	if (g_tics == 1)
-	{
-		makeTics();
-	}
+	if (g_solid == 1) solid3Dgraph();
+	if (g_wire == 1) wire3Dgraph();
+	if (g_tics == 1) makeTics();
 
 	glutSwapBuffers();
 }
@@ -116,25 +109,26 @@ void makeTics(void)
 	GLdouble tmp_x, tmp_y, tmp_z, tmp_zx, tmp_zy;
 	GLdouble tmp_z1_x, tmp_z1_y, tmp_z2_x, tmp_z2_y;
 
-	glLineWidth(1);
-	glColor3d(0, 0, 0);
+	glLineWidth(2);
 
-	glBegin(GL_LINE_LOOP);
-	glVertex3d(g_xmin, g_ymin, g_zmin);
-	glVertex3d(g_xmax, g_ymin, g_zmin);
-	glVertex3d(g_xmax, g_ymax, g_zmin);
-	glVertex3d(g_xmin, g_ymax, g_zmin);
+	glColor3d(1, 0, 0);
+	glBegin(GL_LINES);
+	glVertex3d(g_xmin, g_ymin, g_zmin); glVertex3d(g_xmax, g_ymin, g_zmin);
+	glVertex3d(g_xmin, g_ymax, g_zmin); glVertex3d(g_xmax, g_ymax, g_zmin);
 	glEnd();
 
+	glColor3d(0, 1, 0);
 	glBegin(GL_LINES);
-	glVertex3d(g_xmin, g_ymin, g_zmin);
-	glVertex3d(g_xmin, g_ymin, g_zmax);
-	glVertex3d(g_xmax, g_ymin, g_zmin);
-	glVertex3d(g_xmax, g_ymin, g_zmax);
-	glVertex3d(g_xmax, g_ymax, g_zmin);
-	glVertex3d(g_xmax, g_ymax, g_zmax);
-	glVertex3d(g_xmin, g_ymax, g_zmin);
-	glVertex3d(g_xmin, g_ymax, g_zmax);
+	glVertex3d(g_xmin, g_ymin, g_zmin); glVertex3d(g_xmin, g_ymax, g_zmin);
+	glVertex3d(g_xmax, g_ymin, g_zmin); glVertex3d(g_xmax, g_ymax, g_zmin);
+	glEnd();
+
+	glColor3d(0, 0, 1);
+	glBegin(GL_LINES);
+	glVertex3d(g_xmin, g_ymin, g_zmin); glVertex3d(g_xmin, g_ymin, g_zmax);
+	glVertex3d(g_xmax, g_ymin, g_zmin); glVertex3d(g_xmax, g_ymin, g_zmax);
+	glVertex3d(g_xmax, g_ymax, g_zmin); glVertex3d(g_xmax, g_ymax, g_zmax);
+	glVertex3d(g_xmin, g_ymax, g_zmin); glVertex3d(g_xmin, g_ymax, g_zmax);
 	glEnd();
 
 	s_mtt = sin(g_mt);
@@ -184,15 +178,14 @@ void makeTics(void)
 		tmp_z2_y = g_ymin + 0.15 * s_mtt / g_yscale;
 	}
 
+	glColor3d(0, 0, 0);
+
 	x = g_xmin;
 	for (i = 0; i < 5; i++)
 	{
 		glRasterPos3d(x, tmp_y, g_zmin);
 		num = sprintf(str, "%.2f", x);
-		for (j = 0; j < num; j++)
-		{
-			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[j]);
-		}
+		for (j = 0; j < num; j++) glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[j]);
 		x += (g_xmax - g_xmin) / 4;
 	}
 
@@ -201,10 +194,7 @@ void makeTics(void)
 	{
 		glRasterPos3d(tmp_x, y, g_zmin);
 		num = sprintf(str, "%.2f", y);
-		for (j = 0; j < num; j++)
-		{
-			glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[j]);
-		}
+		for (j = 0; j < num; j++) glutBitmapCharacter(GLUT_BITMAP_8_BY_13, str[j]);
 		y += (g_ymax - g_ymin) / 4;
 	}
 
@@ -260,19 +250,13 @@ void wire3Dgraph(void)
 	for (i = 0; i < g_xnum; i++)
 	{
 		glBegin(GL_LINE_STRIP);
-		for (j = 0; j < g_ynum; j++)
-		{
-			glVertex3dv(g_plot[i][j]);
-		}
+		for (j = 0; j < g_ynum; j++) glVertex3dv(g_plot[i][j]);
 		glEnd();
 	}
 	for (i = 0; i < g_ynum; i++)
 	{
 		glBegin(GL_LINE_STRIP);
-		for (j = 0; j < g_xnum; j++)
-		{
-			glVertex3dv(g_plot[j][i]);
-		}
+		for (j = 0; j < g_xnum; j++) glVertex3dv(g_plot[j][i]);
 		glEnd();
 	}
 }
@@ -303,33 +287,42 @@ void solid3Dgraph(void)
 /* グラフの頂点座標を求める関数 */
 void plotGraph(void)
 {
-	FILE *fp;
-	int i, j;
+	int i, j, k, l;
+	char func[STR_LENGTH], tmp[STR_LENGTH];
 	GLdouble x, y, z;
-
-	fp = fopen("./func/func.csv", "r");
-
-	fscanf(fp, "#%d,%d", &g_xnum, &g_ynum);
 
 	g_zmin = DBL_MAX;
 	g_zmax = DBL_MIN;
 
-	for (i = 0; i < g_xnum; i++)
+	for (i = 0, x = g_xmin; i < g_xnum; i++, x += g_xint)
 	{
-		for (j = 0; j < g_ynum; j++)
+		for (j = 0, y = g_ymin; j < g_ynum; j++, y += g_yint)
 		{
-			fscanf(fp, "%lf,%lf,%lf", &x, &y, &z);
+			for (k = 0; k < STR_LENGTH; k++) func[k] = '\0';
+			for (k = 0, l = 0; g_func[k] != '\0'; k++, l++)
+			{
+				if ((g_func[k] == 'x' || g_func[k] == 'y') && \
+					(k == 0 || \
+					g_func[k - 1] == '+' || g_func[k - 1] == '-' || g_func[k - 1] == '*' || g_func[k - 1] == '/' || \
+					g_func[k - 1] == ' ' || g_func[k - 1] == ',' || g_func[k - 1] == '(' || g_func[k - 1] == ')') && \
+					(g_func[k + 1] == '\0' || \
+					g_func[k + 1] == '+' || g_func[k + 1] == '-' || g_func[k + 1] == '*' || g_func[k + 1] == '/' || \
+					g_func[k + 1] == ' ' || g_func[k + 1] == ',' || g_func[k + 1] == '(' || g_func[k + 1] == ')'))
+				{
+					if (g_func[k] == 'x') sprintf(tmp, "%.2f", x);
+					else if (g_func[k] == 'y') sprintf(tmp, "%.2f", y);
+					strcat(func, tmp);
+					l = strlen(func) - 1;
+				}
+				else func[l] = g_func[k];
+			}
+			z = eval(func);
 			g_plot[i][j][0] = x;
 			g_plot[i][j][1] = y;
 			g_plot[i][j][2] = z;
-			if (z < g_zmin)
-			{
-				g_zmin = z;
-			}
-			if (z > g_zmax)
-			{
-				g_zmax = z;
-			}
+			if (z < g_zmin) g_zmin = z;
+			if (z > g_zmax) g_zmax = z;
+			printf("%s = %f\n", func, z);
 		}
 	}
 	for (i = 0; i < g_xnum; i++)
@@ -434,9 +427,9 @@ void init(void)
 /* メイン関数 */
 int main(int argc, char **argv)
 {
-	if (argc != 8)
+	if (argc != 6 && argc != 8)
 	{
-		fprintf(stderr, "Usage: %s x_min x_max x_interval y_min y_max y_interval\n", argv[0]);
+		fprintf(stderr, "Usage: %s x_min x_max (x_num) y_min y_max (y_num)\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
@@ -451,14 +444,26 @@ int main(int argc, char **argv)
 	glutPassiveMotionFunc(motionPassive);
 	glutMouseFunc(mouse);
 
-	g_xmin = atof(argv[2]);
-	g_xmax = atof(argv[3]);
-	g_xint = atof(argv[4]);
-	g_ymin = atof(argv[5]);
-	g_ymax = atof(argv[6]);
-	g_yint = atof(argv[7]);
+	strcpy(g_func, argv[1]);
+	if (argc == 6)
+	{
+		g_xmin = atof(argv[2]);
+		g_xmax = atof(argv[3]);
+		g_ymin = atof(argv[4]);
+		g_ymax = atof(argv[5]);
+	}
+	else if (argc == 8)
+	{
+		g_xmin = atof(argv[2]);
+		g_xmax = atof(argv[3]);
+		g_xnum = atof(argv[4]);
+		g_ymin = atof(argv[5]);
+		g_ymax = atof(argv[6]);
+		g_ynum = atof(argv[7]);
+	}
+	g_xint = (g_xmax - g_xmin) / (g_xnum - 1);
+	g_yint = (g_ymax - g_ymin) / (g_ynum - 1);
 
-	mkfunc("func/func", argv[1], g_xmin, g_xmax, g_xint, g_ymin, g_ymax, g_yint);
 	plotGraph();
 	init();
 	glutMainLoop();

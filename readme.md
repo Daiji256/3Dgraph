@@ -5,6 +5,7 @@
 このプログラムはgcc + freeglutの環境でコンパイル可能する．
 ```
 gcc main.c mkfunc.c -o 3Dgraph -lGL -lGLU -lglut -lm -Wall
+gcc main.c eval.c -o 3Dgraph -lGL -lGLU -lglut -lm -Wall
 ```
 
 ## 使い方
@@ -16,6 +17,7 @@ gcc main.c mkfunc.c -o 3Dgraph -lGL -lGLU -lglut -lm -Wall
 例）
 ```
 ./3Dgraph "x*x - y*y" -2 2 0.2 -2 2 0.2
+./3Dgraph "x*x - y*y" -2 2 -2 2
 ```
 
 |キー|動作                            |

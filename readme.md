@@ -2,23 +2,26 @@
 
 ## 環境
 
-このプログラムはgcc + freeglutの環境でコンパイル可能する．
+BCC+OpenGLの環境で次のコマンドでコンパイルができる．
 ```
-gcc main.c mkfunc.c -o 3Dgraph -lGL -lGLU -lglut -lm -Wall
-gcc main.c eval.c -o 3Dgraph -lGL -lGLU -lglut -lm -Wall
+bcc32c main.c eval.c -o 3Dgraph.exe
 ```
 
 ## 使い方
 
 次のようにコマンドライン引数を設定して実行する．
 ```
-./3Dgraph equation x_min x_max x_interval y_min y_max y_interval
+3Dgraph.exe func x_min x_max (x_num) y_min y_max (y_num)
 ```
 例）
 ```
-./3Dgraph "x*x - y*y" -2 2 0.2 -2 2 0.2
-./3Dgraph "x*x - y*y" -2 2 -2 2
+3Dgraph.exe "sin(x) + pow((y + 1),2)" -2 2 -2 2
+3Dgraph.exe "sin(x) + pow((y + 1),2)" -2 2 100 -2 2 100
 ```
+
+四則演算（`+,-,x,/`）と括弧（`(,)`）が使える．
+また，次の関数が使える．自作のeval関数を使っているためバグがある気がします．
+`abs,fab,sqrt,sin,cos,tan,asi,acos,atan,sinh,cosh,tanh,asin,acosh,atanh,exp,log,log,ceil,floo,round,pow,atan2,hypot,mod,fmod`
 
 |キー|動作                            |
 |----|--------------------------------|
@@ -28,15 +31,12 @@ gcc main.c eval.c -o 3Dgraph -lGL -lGLU -lglut -lm -Wall
 |Y   |y軸方向に小さくする             |
 |z   |z軸方向に大きくする             |
 |Z   |Z軸方向に小さくする             |
+|u   |グラフの拡大                    |
+|U   |グラフの縮小                    |
 |w   |ワイヤフレームの表示・非表示    |
 |s   |サーフェイスモデルの表示・非表示|
 |t   |目盛りの表示・非表示            |
 |Esc |プログラムの終了                |
 
 マウスの左ドラッグでグラフの回転できる．
-マウスのホイールでグラフの拡大，縮小できる．
-
-## 違う環境で使うためには
-
-主に`mkfunc.c`の`compile`を変更することで違う環境でも使える．
-C言語にはevalが無いため，コマンドライン引数の数式からソースコードを生成・コンパイルし疑似的に動的な数式の設定をしている．
+freeglut環境ではマウスのホイールでグラフの拡大，縮小できる．

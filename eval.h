@@ -3,14 +3,14 @@
 
 #define STR_LENGTH 1024
 
-void funcinit(const char in[], char out[]);
-void strrep(char str[], const char *bef, const char *aft);
-double eval(char *str);
-double eval2(char *str);
-double calc(char *str, int i);
-double calcfunc(char *str);
+double eval(const char *org);
+double calc(const char *org, char *str, int op);
+double calcfunc(const char *org);
+void strinit(char *str, const char *org);
+void strrep(char *str, const char *bef, const char *aft);
+void num2str(char *str, double num);
 int isnumber(char c);
 int isoperator(char c);
-char *getoperator(char *str);
+int isfunc(char c);
 
 #endif /* EVAL_H */

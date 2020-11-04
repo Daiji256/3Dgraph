@@ -292,7 +292,7 @@ void plotGraph(void)
 	GLdouble x, y, z;
 
 	g_zmin = DBL_MAX;
-	g_zmax = DBL_MIN;
+	g_zmax = -DBL_MAX;
 
 	for (i = 0, x = g_xmin; i < g_xnum; i++, x += g_xint)
 	{
@@ -309,8 +309,8 @@ void plotGraph(void)
 					g_func[k + 1] == '+' || g_func[k + 1] == '-' || g_func[k + 1] == '*' || g_func[k + 1] == '/' || \
 					g_func[k + 1] == ' ' || g_func[k + 1] == ',' || g_func[k + 1] == '(' || g_func[k + 1] == ')'))
 				{
-					if (g_func[k] == 'x') sprintf(tmp, "%f", x);
-					else if (g_func[k] == 'y') sprintf(tmp, "%f", y);
+					if (g_func[k] == 'x') sprintf(tmp, "(%f)", x);
+					else if (g_func[k] == 'y') sprintf(tmp, "(%f)", y);
 					strcat(func, tmp);
 					l = strlen(func) - 1;
 				}
@@ -430,7 +430,7 @@ int main(int argc, char **argv)
 {
 	if (argc != 6 && argc != 8)
 	{
-		fprintf(stderr, "Usage: %s x_min x_max (x_num) y_min y_max (y_num)\n", argv[0]);
+		fprintf(stderr, "Usage: %s func x_min x_max (x_num) y_min y_max (y_num)\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 

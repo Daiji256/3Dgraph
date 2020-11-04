@@ -2,7 +2,8 @@
 
 ## 環境
 
-BCC+OpenGLの環境で次のコマンドでコンパイルができる．
+C言語+OpenGLの環境であればどうさする（はず）．
+BCC+OpenGLの環境の場合は次のコマンドでコンパイルができる．
 ```
 bcc32c main.c eval.c -o 3Dgraph.exe
 ```
@@ -15,8 +16,8 @@ bcc32c main.c eval.c -o 3Dgraph.exe
 ```
 例）
 ```
-3Dgraph.exe "sin(x) + pow((y + 1),2)" -2 2 -2 2
-3Dgraph.exe "sin(x) + pow((y + 1),2)" -2 2 100 -2 2 100
+3Dgraph.exe "sin(x) + pow((y + 1), 2)" -5 5 -2 2
+3Dgraph.exe "sin(x) + pow((y + 1), 2)" -5 5 100 -2 2 100
 ```
 
 四則演算（`+,-,x,/`）と括弧（`(,)`）が使える．

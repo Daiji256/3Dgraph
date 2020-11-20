@@ -4,7 +4,7 @@
 
 ## 環境
 
-C言語+OpenGLの環境であればどうさする（はず）．
+C言語+OpenGLの環境であれば動作する（はず）．
 BCC+OpenGLの環境の場合は次のコマンドでコンパイルができる．
 ```
 bcc32c main.c eval.c wbmp.c -o 3Dgraph.exe

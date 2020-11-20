@@ -21,6 +21,8 @@ struct Image
 };
 typedef struct Image Image;
 
-int writebmp(const Image *img, const char *filename);
+int writeBmp(const Image *img, const char *filename);
+Image *createImage(unsigned long width, unsigned long height);
+void freeImage(Image *img);
 
 #endif /* _WBMP_H_ */

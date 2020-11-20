@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "wbmp.h"
 
-int writebmp(const Image *img, const char *filename)
+int writeBmp(const Image *img, const char *filename)
 {
 	FILE* fp;
 	unsigned char hbuf[HEADERSIZE];
 	unsigned char *bmpl;
 	int i, j;
-	unsigned long rwidth = img->width * 3 + img->width % 4;
+	int rwidth = img->width * 3 + img->width % 4;
 	unsigned long dsize = img->height * rwidth;
 	unsigned long fsize = dsize + HEADERSIZE;
 	unsigned long osize = HEADERSIZE;
 	unsigned long isize = INFOHEADERSIZE;
-	unsigned long pn = 1;
-	unsigned long cbit = 24;
+	unsigned short pn = 1;
+	unsigned short cbit = 24;
 	unsigned long cmp = 0;
 	unsigned long xppm = 1;
 	unsigned long yppm = 1;
@@ -30,8 +31,8 @@ int writebmp(const Image *img, const char *filename)
 	hbuf[15] = hbuf[16] = hbuf[17] = 0;
 	memcpy(hbuf + 18, &img->width, sizeof(unsigned long));
 	memcpy(hbuf + 22, &img->height, sizeof(unsigned long));
-	memcpy(hbuf + 26, &pn, sizeof(unsigned long));
-	memcpy(hbuf + 28, &cbit, sizeof(unsigned long));
+	memcpy(hbuf + 26, &pn, sizeof(unsigned short));
+	memcpy(hbuf + 28, &cbit, sizeof(unsigned short));
 	memcpy(hbuf + 30, &cmp, sizeof(unsigned long));
 	memcpy(hbuf + 34, &dsize, sizeof(unsigned long));
 	memcpy(hbuf + 38, &xppm, sizeof(unsigned long));
@@ -40,7 +41,7 @@ int writebmp(const Image *img, const char *filename)
 	fwrite(hbuf, sizeof(unsigned char), HEADERSIZE, fp);
 
 	/* RGB data */
-	if ((bmpl = (unsigned char *)malloc(sizeof(unsigned char)*rwidth)) == NULL) {fclose(fp); return 1;}
+	if ((bmpl = (unsigned char *)malloc(sizeof(unsigned char) * rwidth)) == NULL) {fclose(fp); return 1;}
 	for (i = 0; i < img->height; i++)
 	{
 		for (j = 0; j < img->width; j++)
@@ -57,4 +58,23 @@ int writebmp(const Image *img, const char *filename)
 	fclose(fp);
 
 	return 0;
+}
+
+Image *createImage(unsigned long width, unsigned long height)
+{
+	Image *img;
+
+	if ((img = (Image *)malloc(sizeof(Image))) == NULL) return NULL;
+	if ((img->data = (RGB*)malloc(sizeof(RGB) * width * height)) == NULL) {free(img); return NULL;}
+
+	img->width = width;
+	img->height = height;
+
+	return img;
+}
+
+void freeImage(Image *img)
+{
+	free(img->data);
+	free(img);
 }

@@ -1,6 +1,6 @@
-# func
 func/
-# out
 3Dgraph
 *.out
 *exe
+*tds
+*bmp

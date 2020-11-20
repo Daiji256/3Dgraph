@@ -1,10 +1,12 @@
 #include "eval.h"
+#include "wbmp.h"
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <float.h>
 #include <math.h>
+#include <time.h>
 
 /********************************
 	マクロ定義
@@ -26,6 +28,7 @@ void makeTics(void);
 void wire3Dgraph(void);
 void solid3Dgraph(void);
 void plotGraph(void);
+void saveImage(void);
 void resize(int w, int h);
 void keyin(unsigned char key, int x, int y);
 void motionActive(int x, int y);
@@ -340,6 +343,46 @@ void plotGraph(void)
 	g_zscale = 1 / (g_zmax - g_zmin);
 }
 
+/* 画像保存関数 */
+void saveImage(void)
+{
+	GLubyte *buf;
+	Image *img;
+	char filename[64];
+	int width, height, i, j;
+
+	width = glutGet(GLUT_WINDOW_WIDTH);
+	height = glutGet(GLUT_WINDOW_HEIGHT);
+
+	buf = (GLubyte*)malloc(width * height * 3);
+	glReadBuffer(GL_FRONT);
+	glReadPixels(0, 0, width , height, GL_RGB, GL_UNSIGNED_BYTE, buf);
+
+	if ((img = createImage(width, height)) == NULL)
+	{
+		fprintf(stdout, "cannot create image\n");
+		return;
+	};
+	for (i = 0; i < img->height; i++)
+	{
+		for (j = 0; j < img->width; j++)
+		{
+			img->data[(img->height - i - 1) * img->width + j].r = buf[3 * (width * i + j)];
+			img->data[(img->height - i - 1) * img->width + j].g = buf[3 * (width * i + j) + 1];
+			img->data[(img->height - i - 1) * img->width + j].b = buf[3 * (width * i + j) + 2];
+		}
+	}
+	sprintf(filename, "%ld.bmp", time(NULL));
+	if (writeBmp(img, filename))
+	{
+		fprintf(stdout, "cannot write image\n");
+		freeImage(img);
+		return;
+	};
+	freeImage(img);
+	fprintf(stdout, "saved %s\n", filename);
+}
+
 /* リサイズコールバック関数 */
 void resize(int w, int h)
 {
@@ -365,6 +408,7 @@ void keyin(unsigned char key, int x, int y)
 		case 't': g_tics = (g_tics + 1) % 2; glutPostRedisplay(); break;
 		case 'u': g_size *= 1.05; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
 		case 'U': g_size /= 1.05; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
+		case 'S': saveImage(); break;
 		case '\033': exit(0);
 		default: break;
 	}

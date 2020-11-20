@@ -5,7 +5,7 @@
 C言語+OpenGLの環境であればどうさする（はず）．
 BCC+OpenGLの環境の場合は次のコマンドでコンパイルができる．
 ```
-bcc32c main.c eval.c -o 3Dgraph.exe
+bcc32c main.c eval.c wbmp.c -o 3Dgraph.exe
 ```
 
 ## 使い方
@@ -37,6 +37,7 @@ bcc32c main.c eval.c -o 3Dgraph.exe
 |w   |ワイヤフレームの表示・非表示    |
 |s   |サーフェイスモデルの表示・非表示|
 |t   |目盛りの表示・非表示            |
+|S   |画像の保存                      |
 |Esc |プログラムの終了                |
 
 マウスの左ドラッグでグラフの回転できる．

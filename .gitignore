@@ -4,3 +4,4 @@ func/
 *exe
 *tds
 *bmp
+!image.bmp

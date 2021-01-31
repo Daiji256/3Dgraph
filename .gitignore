@@ -1,6 +1,5 @@
-3Dgraph
 *.out
-*exe
-*tds
-*bmp
+*.exe
+*.o
+*.bmp
 !image.bmp

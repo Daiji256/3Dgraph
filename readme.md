@@ -5,26 +5,23 @@
 ## 環境
 
 C言語+OpenGLの環境であれば動作する（はず）．
-BCC+OpenGLの環境の場合は次のコマンドでコンパイルができる．
-```
-bcc32c main.c eval.c wbmp.c -o 3Dgraph.exe
-```
+gcc用のMakefileを参考にコンパイルしてください．
 
 ## 使い方
 
 次のようにコマンドライン引数を設定して実行する．
 ```
-3Dgraph.exe func x_min x_max (x_num) y_min y_max (y_num)
+./3Dgraph.out func x_min x_max (x_num) y_min y_max (y_num)
 ```
 例）
 ```
-3Dgraph.exe "sin(x) + pow((y + 1), 2)" -5 5 -2 2
-3Dgraph.exe "sin(x) + pow((y + 1), 2)" -5 5 100 -2 2 100
+./3Dgraph.out "sin(x) + pow((y + 1), 2)" -5 5 -2 2
+./3Dgraph.out "sin(x) + pow((y + 1), 2)" -5 5 100 -2 2 100
 ```
 
 四則演算（`+,-,x,/`）と括弧（`(,)`）が使える．
-また，次の関数が使える．自作のeval関数を使っているためバグがある気がします．
-`abs,fab,sqrt,sin,cos,tan,asi,acos,atan,sinh,cosh,tanh,asin,acosh,atanh,exp,log,log,ceil,floo,round,pow,atan2,hypot,mod,fmod`
+また，次の関数が使える．自作の数式用eval関数を使っているためバグがある気がします．
+`abs,fab,sqrt,sin,cos,tan,asin,acos,atan,sinh,cosh,tanh,asin,acosh,atanh,exp,log,log,ceil,floo,round,pow,atan2,hypot,mod,fmod`
 
 |キー|動作                            |
 |----|--------------------------------|

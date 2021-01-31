@@ -16,7 +16,7 @@ gcc用のMakefileを参考にコンパイルしてください．
 例）
 ```
 ./3Dgraph.out "sin(x) + pow((y + 1), 2)" -5 5 -2 2
-./3Dgraph.out "sin(x) + pow((y + 1), 2)" -5 5 100 -2 2 100
+./3Dgraph.out "sin(sqrt(x*x+y*y)) / sqrt(x*x+y*y)" -20 20 100 -20 20 100
 ```
 
 四則演算（`+,-,x,/`）と括弧（`(,)`）が使える．

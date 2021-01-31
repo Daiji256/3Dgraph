@@ -56,7 +56,7 @@ GLdouble g_size = 700.0;
 GLdouble g_xscale = 1.0, g_yscale = 1.0, g_zscale = 1.0;
 
 /* グラフや目盛りの有無 */
-int g_wire = 0, g_solid = 1, g_tics = 1;
+unsigned char g_wire = 1, g_solid = 1, g_tics = 1;
 
 /* マウスの角度 */
 int g_mx, g_my;
@@ -397,17 +397,17 @@ void keyin(unsigned char key, int x, int y)
 {
 	switch(key)
 	{
-		case 'x': g_xscale *= 1.2; glutPostRedisplay(); break;
-		case 'X': g_xscale /= 1.2; glutPostRedisplay(); break;
-		case 'y': g_yscale *= 1.2; glutPostRedisplay(); break;
-		case 'Y': g_yscale /= 1.2; glutPostRedisplay(); break;
-		case 'z': g_zscale *= 1.2; glutPostRedisplay(); break;
-		case 'Z': g_zscale /= 1.2; glutPostRedisplay(); break;
-		case 'w': g_wire = (g_wire + 1) % 2; glutPostRedisplay(); break;
-		case 's': g_solid = (g_solid + 1) % 2; glutPostRedisplay(); break;
-		case 't': g_tics = (g_tics + 1) % 2; glutPostRedisplay(); break;
-		case 'u': g_size *= 1.05; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
-		case 'U': g_size /= 1.05; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
+		case 'x': g_xscale *= 1.25; glutPostRedisplay(); break;
+		case 'X': g_xscale /= 1.25; glutPostRedisplay(); break;
+		case 'y': g_yscale *= 1.25; glutPostRedisplay(); break;
+		case 'Y': g_yscale /= 1.25; glutPostRedisplay(); break;
+		case 'z': g_zscale *= 1.25; glutPostRedisplay(); break;
+		case 'Z': g_zscale /= 1.25; glutPostRedisplay(); break;
+		case 'w': g_wire ^= 1; glutPostRedisplay(); break;
+		case 's': g_solid ^= 1; glutPostRedisplay(); break;
+		case 't': g_tics ^= 1; glutPostRedisplay(); break;
+		case 'u': g_size *= 1.125; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
+		case 'U': g_size /= 1.125; resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)); glutPostRedisplay(); break;
 		case 'S': saveImage(); break;
 		case '\033': exit(0);
 		default: break;
@@ -422,8 +422,11 @@ void motionActive(int x, int y)
 	dx = x - g_mx;
 	dy = y - g_my;
 
-	g_mt = g_mt_s + 0.001 * dx;
-	g_mp = g_mp_s + 0.001 * dy;
+	g_mt = g_mt_s + dx / 1024.0;
+	g_mp = g_mp_s + dy / 1024.0;
+
+	if (g_mp > PI * 0.4375) g_mp = PI * 0.4375;
+	else if (g_mp < -PI * 0.4375) g_mp = -PI * 0.4375;
 
 	g_ex = sin(g_mt) * cos(g_mp);
 	g_ey = cos(g_mt) * cos(g_mp);
@@ -446,13 +449,13 @@ void mouse(int button, int state, int x, int y)
 {
 	if (button == 3)
 	{
-		g_size *= 1.05;
+		g_size *= 1.125;
 		resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 		glutPostRedisplay();
 	}
 	else if (button == 4)
 	{
-		g_size /= 1.05;
+		g_size /= 1.125;
 		resize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 		glutPostRedisplay();
 	}

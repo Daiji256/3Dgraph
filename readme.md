@@ -9,9 +9,10 @@ gcc用のMakefileを参考にコンパイルしてください．
 
 ## 使い方
 
-次のようにコマンドライン引数を設定して実行する．
+次のようにコマンドライン引数を次のように実行する．
 ```
-./3Dgraph.out func x_min x_max (x_num) y_min y_max (y_num)
+./3Dgraph.out func x_min x_max y_min y_max
+./3Dgraph.out func x_min x_max x_num y_min y_max y_num
 ```
 例）
 ```
@@ -41,3 +42,8 @@ gcc用のMakefileを参考にコンパイルしてください．
 
 マウスの左ドラッグでグラフの回転できる．
 freeglut環境ではマウスのホイールでグラフの拡大，縮小できる．
+
+## 今後やりたいこと
+
+`main.c`のグラフ描画周辺を別ファイルに移動する．
+グローバル変数をまとめて構造体で定義する．

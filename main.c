@@ -33,7 +33,7 @@ void resize(int w, int h);
 void keyin(unsigned char key, int x, int y);
 void motionActive(int x, int y);
 void motionPassive(int x, int y);
-void mouse(int button, int state, int x, int y);
+void mouseWheel(int button, int state, int x, int y);
 void init(void);
 
 /********************************
@@ -445,7 +445,7 @@ void motionPassive(int x, int y)
 }
 
 /* マウスのホイールの処理 */
-void mouse(int button, int state, int x, int y)
+void mouseWheel(int button, int state, int x, int y)
 {
 	if (button == 3)
 	{
@@ -477,7 +477,8 @@ int main(int argc, char **argv)
 {
 	if (argc != 6 && argc != 8)
 	{
-		fprintf(stderr, "Usage: %s func x_min x_max (x_num) y_min y_max (y_num)\n", argv[0]);
+		fprintf(stderr, "Usage: %s func x_min x_max y_min y_max\n", argv[0]);
+		fprintf(stderr, "       %s func x_min x_max x_num y_min y_max y_num\n", argv[0]);
 		return EXIT_FAILURE;
 	}
 
@@ -490,7 +491,7 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(keyin);
 	glutMotionFunc(motionActive);
 	glutPassiveMotionFunc(motionPassive);
-	glutMouseFunc(mouse);
+	glutMouseFunc(mouseWheel);
 
 	strcpy(g_func, argv[1]);
 	if (argc == 6)
